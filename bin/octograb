@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'tins/go'
-require './lib/octograb/client'
+require 'fileutils'
+require './lib/octograb'
+
 
 include Tins::GO
 
