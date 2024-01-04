@@ -1,4 +1,4 @@
-#!/Users/daniel/.asdf/shims/ruby
+#!/usr/bin/env ruby
 
 require 'tins/go'
 require './lib/octograb/client'
@@ -7,8 +7,8 @@ include Tins::GO
 
 module OctoGrab
   class Main
-    def initialize
-      @client = OctoGrab::Client.new(access_token: access_token, repo: 'betterplace/betterplace')
+    def initialize(client:)
+      @client = client
     end
 
     def prs
@@ -63,13 +63,29 @@ module OctoGrab
       puts list
     end
 
-    def access_token
-      ENV['GITHUB_TOKEN'] || (raise "Set GITHUB_TOKEN")
-    end
-
   end
 end
 
-OPTS = go 'h'
+OPTS = go 'ht:'
 
-OctoGrab::Main.new.output
+if OPTS[?h]
+  puts "HELP for #{ARGV.first}"
+  exit 1
+end
+
+token = ENV['GITHUB_TOKEN'] || OPTS[?t]
+unless token
+  puts
+  puts "Missing github access token. Please create a token on github:"
+  puts "https://github.com/settings/tokens"
+  puts "And provide read:org, read:public_key and repo permissions"
+  puts
+  puts "The set the token through the GITHUB_TOKEN env variable or"
+  puts "use the -t option."
+  puts
+  exit 1
+end
+
+client = OctoGrab::Client.new(access_token: token, repo: 'betterplace/betterplace')
+
+OctoGrab::Main.new(client: client).output
