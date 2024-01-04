@@ -66,10 +66,14 @@ module OctoGrab
   end
 end
 
-OPTS = go 'ht:'
+OPTS = go 'ht:r:'
 
 if OPTS[?h]
-  puts "HELP for #{ARGV.first}"
+  puts
+  puts "USAGE"
+  puts "#{$PROGRAM_NAME} -h          Show this help"
+  puts "#{$PROGRAM_NAME} -t <TOKEN>  Set the github access token"
+  puts "#{$PROGRAM_NAME} -r <repo>   Set the repo name"
   exit 1
 end
 
@@ -86,6 +90,14 @@ unless token
   exit 1
 end
 
-client = OctoGrab::Client.new(access_token: token, repo: 'betterplace/betterplace')
+repo = OPTS[?r]
+unless repo
+  puts
+  puts "You must provide a repository name with the -r option"
+  puts
+  exit 1
+end
+
+client = OctoGrab::Client.new(access_token: token, repo: repo)
 
 OctoGrab::Main.new(client: client).output
