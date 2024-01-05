@@ -1,2 +1,3 @@
 require './lib/octograb/client'
-require './lib/octograb/pr_duration'
+require './lib/octograb/pull'
+require './lib/octograb/pull_collection'
